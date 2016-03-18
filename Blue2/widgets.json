@@ -1,0 +1,15 @@
+{
+	"Widgets":
+	{
+		"appsettings":
+			{"valid":1,"hasWidget":0,"settingsWidget":"happycolor","hasSettings":"HappyColor"},
+		"userinfo":
+			{"valid":1,"hasWidget":0,"settingsWidget":"userinfo","hasSettings":"UserInfo"},
+		"wordrain":
+			{"valid":1,"hasWidget":1,"settingsWidget":"happywords","hasSettings":"HappyWords"},
+		"drawlines":
+			{"valid":1,"hasWidget":1},
+		"followcircle":
+			{"valid":1,"hasWidget":1}
+	}
+}

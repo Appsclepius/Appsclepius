@@ -3,22 +3,9 @@ display.setStatusBar( display.HiddenStatusBar )
 math.randomseed(os.time())
 
 wordRainWidget = {}
-wordRainWidget.screen = display.newGroup()
+wordRainWidget.screen = nil
 
-local clickCredit = display.newGroup()
-wordRainWidget.screen:insert( clickCredit )	
-
-local bkgnd = display.newRect( wordRainWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight )
-c1, c2, dir = GetBkgndColorForPhase( 0 )
-bkgnd:setFillColor( {
-	type = 'gradient',
-	color1 = c1,
-	color2 = c2,
-	direction = dir
-} )
-bkgnd.anchorX = 0
-bkgnd.anchorY = 0
-transition.to( wordRainWidget.screen, { y = display.contentHeight * -1, alpha=0, time = 0, transition = easing.outQuad } )
+local bkgnd = nil 
 
 local blahWords =
 {
@@ -126,19 +113,19 @@ local blahWords =
 	"recycle",
 }
 
-local goodWords = 
-{
-	happy = 0,
-	love = 0,
-	god = 0,
-	fun = 0,
-	family = 0,
-	forgive = 0,
-	play = 0,
-	icecream = 0,
-	kids = 0,
-	raise = 0,
-}
+local goodWords = {}
+--~ {
+--~ 	happy = 0,
+--~ 	love = 0,
+--~ 	god = 0,
+--~ 	fun = 0,
+--~ 	family = 0,
+--~ 	forgive = 0,
+--~ 	play = 0,
+--~ 	icecream = 0,
+--~ 	kids = 0,
+--~ 	raise = 0,
+--~ }
 local wordRain = {}
 local numWordsAdded = 0
 local numWordsInRain = 0
@@ -159,6 +146,12 @@ local butnFS = 18
 local backgroundMusic = nil
 local clickSound = nil
 local fullyHappy = false
+local musicCredit = nil
+local myText1 = nil
+local myText2 = nil
+local clickCredit = nil
+local cText1 = nil
+local cText2 = nil
 
 local function GetUnusedGoodWord()
 	usageSortedWords = {}
@@ -264,7 +257,6 @@ function handleButtonEvent( event )
 		else
 			audio.play( clickSound, { channel=2 } )
 		end
-		print( event.target.width )
 		--clickCredit.x = event.target.x - ( event.target.width/2 )
 		clickCredit.y = event.target.y - ( butnH/2 )
 		clickCredit.alpha = 1
@@ -305,7 +297,7 @@ function AddToWordRain( numWords )
 				numBlahWordsInARow = 0
 				butnInfo.fontSize = butnFS + 2
 				if currentgoodWordsFoundMilestone < 4 then
-					butnInfo.labelColor  = { default=happyColor, over=happyColor }
+					butnInfo.labelColor  = { default=Settings.HappyColor, over=Settings.HappyColor }
 					butnInfo.labelColor.default[4] = 0.8
 				else
 					butnInfo.labelColor = { default={ 1, 1, 1 }, over={ 0, 0, 0, 0.5 } }
@@ -354,7 +346,6 @@ end
 wordRainWidget.enterFrame = function( event )
 	thisFrameTime = event.time/1000 
 	if thisFrameTime - lastUpdateTime > 2 or ( lfNumWordsInTransition > 0 and numWordsInTransition == 0 )  then
-		
 		if numGoodWordsFound < goodWordsFoundMilestones[1] then
 			numWords = 1
 			butnW = display.contentWidth/2
@@ -406,6 +397,27 @@ wordRainWidget.TransitionOutComplete = function( screen )
 	for word, buttonInfo in pairs(wordRain) do
 		RemoveWord( buttonInfo.button )
 	end
+	
+	display.remove( myText1 )
+	myText1 = nil
+	display.remove( myText2 )
+	myText2 = nil
+	display.remove( musicCredit )
+	musicCredit = nil
+
+	display.remove( cText1 )
+	cText1 = nil
+	display.remove( cText2 )
+	cText2 = nil
+	display.remove( clickCredit )
+	clickCredit = nil	
+
+	display.remove( bkgnd )
+	bkgnd = nil	
+	
+	display.remove( wordRainWidget.screen )
+	wordRainWidget.screen = nil
+
 	appTransitionComplete = true
 end
 
@@ -413,6 +425,18 @@ wordRainWidget.TransitionOut = function( time )
 	-- Transition Screen out
 	transition.to( wordRainWidget.screen, { y = -display.contentHeight, alpha=0, time = time, transition = easing.outQuad, onComplete=wordRainWidget.TransitionOutComplete } )
 	
+	bkgnd = display.newRect( wordRainWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight )
+	c1, c2, dir = GetBkgndColorForPhase( 0 )
+	bkgnd:setFillColor( {
+		type = 'gradient',
+		color1 = c1,
+		color2 = c2,
+		direction = dir
+	} )
+	bkgnd.anchorX = 0
+	bkgnd.anchorY = 0
+	transition.to( wordRainWidget.screen, { y = display.contentHeight * -1, alpha=0, time = 0, transition = easing.outQuad } )
+
 	-- Stop and clear background music
 	audio.stop( backgroundMusic )
 	audio.dispose( backgroundMusic )
@@ -430,6 +454,9 @@ end
 
 
 wordRainWidget.TransitionIn = function( time )
+
+	wordRainWidget.screen = display.newGroup()
+
 	-- Transition Screen In
 	transition.to( wordRainWidget.screen, { y = display.screenOriginY, alpha=1, time = time, transition = easing.outQuad } )
 
@@ -439,22 +466,27 @@ wordRainWidget.TransitionIn = function( time )
 	audio.setMaxVolume( 0.1, { channel=1 } )
 	
 	-- Music Credit
-	local musicCredit = display.newGroup()
+	musicCredit = display.newGroup()
 	wordRainWidget.screen:insert( musicCredit )	
-	local myText1 = display.newText( "Music: Silver Blue Light by Kevin MacLeod", display.actualContentWidth/2, display.actualContentHeight-40, native.systemFont, 12 )
+	myText1 = display.newText( "Music: Silver Blue Light by Kevin MacLeod", display.actualContentWidth/2, display.actualContentHeight-40, native.systemFont, 12 )
 	musicCredit:insert( myText1 )
-	local myText2 = display.newText( "http://incompetech.com/music/", display.actualContentWidth/2, display.actualContentHeight-20, native.systemFont, 10 )
+	myText2 = display.newText( "http://incompetech.com/music/", display.actualContentWidth/2, display.actualContentHeight-20, native.systemFont, 10 )
 	musicCredit:insert( myText2 )
 	transition.to( musicCredit, {alpha=0,time=10000,onComplete=mcFadeOutDone} )
 
 	-- Load click sound
+	clickCredit = display.newGroup()
+	wordRainWidget.screen:insert( clickCredit )	
 	clickSound = audio.loadSound( "wordrain\\chime.wav" )
 	audio.setMaxVolume( 0.03, { channel=2 } )
-	local cText1 = display.newText( "Sound by JustinBW", display.actualContentWidth/2, 20, native.systemFont, 10 )
+	cText1 = display.newText( "Sound by JustinBW", display.actualContentWidth/2, 20, native.systemFont, 10 )
 	clickCredit:insert( cText1 )
-	local cText2 = display.newText( "http://bit.ly/1NOY9GJ", display.actualContentWidth/2, 40, native.systemFont, 10 )
+	cText2 = display.newText( "http://bit.ly/1NOY9GJ", display.actualContentWidth/2, 40, native.systemFont, 10 )
 	clickCredit:insert( cText2 )
 	clickCredit.alpha = 0
+	
+	goodWords = Settings.HappyWords
+	lastUpdateTime = 0
 	
 	-- Add the frame update
 	Runtime:addEventListener( "enterFrame", wordRainWidget.enterFrame )

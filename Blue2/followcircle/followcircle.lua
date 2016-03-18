@@ -3,21 +3,9 @@ display.setStatusBar( display.HiddenStatusBar )
 math.randomseed(os.time())
 
 followCircleWidget = {}
-followCircleWidget.screen = display.newGroup()
+followCircleWidget.screen = nil
 
-local bkgnd = display.newRect(followCircleWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight, 18 )
-c1, c2, dir = GetBkgndColorForPhase( 0 )
-bkgnd:setFillColor( {
-	type = 'gradient',
-	color1 = c1,
-	color2 = c2,
-	direction = dir
-} )
-bkgnd.anchorX = 0
-bkgnd.anchorY = 0
-transition.to( followCircleWidget.screen, { y = display.contentHeight * -1, alpha=0, time = 0, transition = easing.outQuad } )
-
-
+local bkgnd = nil 
 local theCircle
 local wanderDirX = 0
 local wanderDirY = 0
@@ -31,6 +19,9 @@ local completionTimeLeft = completionTime
 local circleScaleTransition = nil
 local emitter1ScaleTransition = nil
 local onTheCircleLastFrame = false
+local musicCredit = nil
+local myText1 = nil
+local myText2 = nil
 
 function UpdateWanderDir()
 	-- Generate movement
@@ -188,12 +179,26 @@ followCircleWidget.enterFrame = function( event )
 end
 
 followCircleWidget.TransitionOutComplete = function( screen )
-	theCircle:removeSelf()
+	display.remove( theCircle )
 	theCircle = nil
 	emitter1:removeSelf()
 	emitter1 = nil 
 	emitter2:removeSelf()
 	emitter2 = nil
+	
+	display.remove( myText1 )
+	myText1 = nil
+	display.remove( myText2 )
+	myText2 = nil
+	display.remove( musicCredit )
+	musicCredit = nil
+	
+	display.remove( bkgnd )
+	bkgnd = nil
+	
+	display.remove( followCircleWidget.screen )
+	followCircleWidget.screen = nil
+	
 	appTransitionComplete = true
 end
 
@@ -206,10 +211,6 @@ followCircleWidget.TransitionOut = function( time )
 	audio.dispose( backgroundMusic )
 	audio.setMaxVolume( 1, { channel=1 } )	
 	
---~ 	audio.stop( clickSound )
---~ 	audio.dispose( clickSound )
---~ 	audio.setMaxVolume( 1, { channel=2 } )
-
 	-- Stop the emitters
 	emitter1:stop()
 	emitter2:stop()
@@ -221,23 +222,38 @@ followCircleWidget.TransitionOut = function( time )
 end
 	
 followCircleWidget.TransitionIn = function( time )
+
+	followCircleWidget.screen = display.newGroup()
+
+	bkgnd = display.newRect(followCircleWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight, 18 )
+	c1, c2, dir = GetBkgndColorForPhase( 0 )
+	bkgnd:setFillColor( {
+		type = 'gradient',
+		color1 = c1,
+		color2 = c2,
+		direction = dir
+	} )
+	bkgnd.anchorX = 0
+	bkgnd.anchorY = 0
+	transition.to( followCircleWidget.screen, { y = display.contentHeight * -1, alpha=0, time = 0, transition = easing.outQuad } )
+
 	-- Transition Screen In
 	transition.to( followCircleWidget.screen, { y = display.screenOriginY, alpha=1, time = time, transition = easing.outQuad } )
 
 	-- Create the circle
 	theCircle = display.newCircle( followCircleWidget.screen, display.actualContentWidth/2, display.actualContentHeight/2, display.actualContentWidth/3 )
-	theCircle.fill = happyColor
+	theCircle.fill = Settings.HappyColor
 	
 	-- Slowly rotate the circle
 	transition.to( theCircle, { rotation=-360, time=10000, iterations=30 } )
 	
 	-- Particle effects
-	emitter1 = particleDesigner.newEmitter( 'followcircle\\blue_galaxy.json' )
+	emitter1 = loadsave.loadAsEmitter( 'followcircle\\blue_galaxy.json' )
 	followCircleWidget.screen:insert( emitter1 )
 	transition.to( emitter1, { x=display.actualContentWidth/2, y=display.actualContentHeight/2, time=0 } )
 	emitter1:pause()
 	
-	emitter2 = particleDesigner.newEmitter( 'followcircle\\my_galaxy.json' )
+	emitter2 = loadsave.loadAsEmitter( 'followcircle\\my_galaxy.json' )
 	followCircleWidget.screen:insert( emitter2 )
 	transition.to( emitter2, { x=display.actualContentWidth/2, y=display.actualContentHeight/2, time=0 } )
 	emitter2:pause()
@@ -248,11 +264,11 @@ followCircleWidget.TransitionIn = function( time )
 	audio.setMaxVolume( 0.2, { channel=1 } )
 	
 	-- Music Credit
-	local musicCredit = display.newGroup()
+	musicCredit = display.newGroup()
 	followCircleWidget.screen:insert( musicCredit )	
-	local myText1 = display.newText( "Music: Ripples by Kevin MacLeod", display.actualContentWidth/2, display.actualContentHeight-40, native.systemFont, 12 )
+	myText1 = display.newText( "Music: Ripples by Kevin MacLeod", display.actualContentWidth/2, display.actualContentHeight-40, native.systemFont, 12 )
 	musicCredit:insert( myText1 )
-	local myText2 = display.newText( "http://incompetech.com/music/", display.actualContentWidth/2, display.actualContentHeight-20, native.systemFont, 10 )
+	myText2 = display.newText( "http://incompetech.com/music/", display.actualContentWidth/2, display.actualContentHeight-20, native.systemFont, 10 )
 	musicCredit:insert( myText2 )
 	transition.to( musicCredit, {alpha=0,time=10000,onComplete=mcFadeOutDone} )
 
