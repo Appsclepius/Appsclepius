@@ -1,0 +1,8 @@
+Data =
+{
+    Name = '',
+    Desc = '',
+    Settings = 
+    {
+    },
+}
