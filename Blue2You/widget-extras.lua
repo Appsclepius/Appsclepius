@@ -784,3 +784,80 @@ function widget.newModuleInfoPanel( options )
     return barContainer
 end
 
+function widget.newWidgetQuotePanel( options )
+    local customOptions = options or {}
+    local opt = {}
+    
+    local statusBarPad = 0
+    if opt.includeStatusBar then
+        statusBarPad = display.topStatusBarContentHeight
+    end
+
+    opt.left = customOptions.left or nil
+    opt.top = customOptions.top or nil
+    opt.width = customOptions.width or display.contentWidth
+    opt.height = customOptions.height or 50
+    
+    opt.x = customOptions.x or display.contentCenterX
+    opt.y = customOptions.y or (opt.height + statusBarPad) * 0.5
+    opt.id = customOptions.id
+     
+    opt.background = customOptions.background
+    opt.backgroundColor = customOptions.backgroundColor
+    opt.quote = customOptions.quote or ""
+    opt.titleColor = customOptions.titleColor or { 0, 0, 0 }
+    opt.titleFont = customOptions.titleFont or native.systemFontBold
+    opt.titleFontSize = customOptions.titleFontSize or 18
+    opt.titleX = customOptions.titleX or display.contentCenterX
+    opt.titleY = customOptions.titleY or (opt.height + statusBarPad) * 0.5
+    opt.source = customOptions.source or ""
+    opt.descColor = customOptions.descColor or { 0, 0, 0 }
+    opt.descFont = customOptions.descFont or native.systemFont
+    opt.descFontSize = customOptions.descFontSize or 18
+    opt.descX = customOptions.descX or display.contentCenterX
+    opt.descY = customOptions.descY or (opt.height + statusBarPad) * 0.5
+    opt.image = customOptions.image or nil
+    opt.isButton = customOptions.isButton or false
+    opt.locked = customOptions.locked or false
+    
+    if opt.left then
+    	opt.x = opt.left + opt.width * 0.5
+    end
+    if opt.top then
+    	opt.y = opt.top + (opt.height + statusBarPad) * 0.5
+    end
+
+    local barContainer = display.newGroup()
+    barContainer.anchorX = 0
+    barContainer.anchorY = 0
+    
+    local background = display.newRect(barContainer, 2, 4, opt.width - 4, opt.height + statusBarPad )    
+    background:setFillColor( customOptions.backgroundColor[1], customOptions.backgroundColor[2], customOptions.backgroundColor[3] )
+    background.anchorX = 0
+    background.anchorY = 0
+
+    barContainer._title = display.newText('"'..opt.quote..'"', opt.titleX, opt.titleY, opt.titleFont, opt.titleFontSize)
+    barContainer._title.anchorX = 0
+--        barContainer._title.anchorY = 0
+    barContainer._title:setFillColor(unpack(opt.titleColor))
+    barContainer:insert(barContainer._title)  
+
+    local sourceName = ''
+    if opt.source == '' then
+        sourceName = '- Unknown'
+    else
+        sourceName = '-'..opt.source
+    end
+    
+    barContainer._desc = display.newText(sourceName, opt.descX, opt.descY, opt.descFont, opt.descFontSize)
+    barContainer._desc.anchorX = 0
+--        barContainer._desc.anchorY = 0
+    barContainer._desc:setFillColor(unpack(opt.descColor))
+    barContainer:insert(barContainer._desc)  
+
+    barContainer.x = 0
+    barContainer.y = opt.y
+    
+    return barContainer
+end
+

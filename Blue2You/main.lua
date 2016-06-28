@@ -1,10 +1,32 @@
 local composer = require ( "composer" )
 local widget = require( "widget" )
 local myApp = require( "myapp" ) 
+
+require( "settings\\ElementsHelper" )
+
+myApp.Quotes = {}
+local quotesTableLoaded = require( "settings\\_settings_quotes" )
+if quotesTableLoaded then
+    for k,v in ipairs( Quotes ) do
+        local quotesLoaded = require( "settings\\"..v )
+        if quotesLoaded then
+            for qK, qV in ipairs( Data.Settings ) do
+                myApp.Quotes[#myApp.Quotes+1] = qV
+            end
+        end
+    end
+end
+
 local settingsLoaded = require( "settings\\_settings_default" )
 if settingsLoaded then
     myApp.Settings = Settings
 end
+
+local userDataLoaded = require( "db\\UserData" )
+if userDataLoaded then
+    myApp.UserData = UserData
+end
+
 myApp.curModules = nil
 
 if (display.pixelHeight/display.pixelWidth) > 1.5 then
@@ -88,11 +110,20 @@ function myApp.showScreenHome()
 end
 
 function myApp.showScreenModules()
-    myApp.tabBar:setSelected(2)
+    --myApp.tabBar:setSelected(2)
     local options = {
     }
     composer.removeHidden()
     composer.gotoScene("screen_modules", {time=250, effect="crossFade", params = options})
+    return true
+end
+
+function myApp.showScreenQuotes()
+    --myApp.tabBar:setSelected(2)
+    local options = {
+    }
+--    composer.removeHidden()
+--    composer.gotoScene("screen_modules", {time=250, effect="crossFade", params = options})
     return true
 end
 

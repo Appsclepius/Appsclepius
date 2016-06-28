@@ -28,7 +28,17 @@ local onRowTouch = function( event )
         local id = row.index
         
         myApp.curModules = widgetData.Modules
-        myApp.showScreenModules()
+        
+        if widgetData.TargetScreen == 'NotificationsScreen' then
+            --myApp.showScreenModules()    
+        elseif widgetData.TargetScreen == 'RemindersScreen' then
+            --myApp.showScreenModules()    
+        elseif widgetData.TargetScreen == 'ModulesScreen' then
+            myApp.showScreenModules()    
+        elseif widgetData.TargetScreen == 'QuotesScreen' then
+            myApp.showScreenQuotes()    
+        end
+        
     end
     return true
 end
@@ -76,6 +86,36 @@ local function onRowRender(event)
     })
     row:insert(infoPanel)
     
+    local curYOffset = 60
+    
+    if widgetData.Elements ~= nil then
+        for k,v in ipairs( widgetData.Elements ) do
+            if v.Type == 'Quote' then
+                local quotePanel = widget.newWidgetQuotePanel({
+                    quote = v.Settings.Quote,
+                    source = v.Settings.Source,
+                    height = v.Height,
+                    y = curYOffset,
+                    titleX = 10,
+                    titleY = 25,---10,
+                    descX = 20,---15,
+                    descY = 65,---15,
+                    backgroundColor = { 0.72, 0.8, 0.92 },
+                    titleColor = {0, 0, 0},
+                    titleFont = myApp.font,
+                    titleFontSize = 20,
+                    descColor = {0.2, 0.2, 0.2},
+                    descFont = myApp.font,
+                    descFontSize = 14,
+                })
+                row:insert(quotePanel)
+            elseif v.Type == 'StatReport' then
+                
+            end
+            
+        end
+    end
+
     return true
 end
 
@@ -133,10 +173,16 @@ function scene:create( event )
     
     for i = 1, #myApp.Settings.Widgets do
         for j = 1, #myApp.Settings.Widgets[i].Widgets do
-
+            local rowHeight = 60
+            if myApp.Settings.Widgets[i].Widgets[j].Elements ~= nil then
+                for k,v in ipairs( myApp.Settings.Widgets[i].Widgets[j].Elements ) do
+                    rowHeight = rowHeight + v.Height
+                end
+            end
+            
             print( 'Inserting row: '..myApp.Settings.Widgets[i].Widgets[j].Name..'\n')
             myList:insertRow{
-                rowHeight = 60,
+                rowHeight = rowHeight,
                 rowColor = { 1, 1, 1 },
                 lineColor = { 0.90, 0.90, 0.90 },
                 params = {

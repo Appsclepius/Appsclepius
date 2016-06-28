@@ -14,9 +14,10 @@ Settings =
                     Name = "Summary",
                     Desc = "Summary of recent activity with action short-cuts.",
                     Image = "images/widget_summary",
-                    Modules =
+                    TargetScreen = "<none>",
+                    Elements =
                     {
-                        Prefix = "summary_",
+                        AddQuote( true ),
                     },
                     Settings = "mod_summary"
                 },
@@ -25,10 +26,7 @@ Settings =
                     Name = "Notifications",
                     Desc = "Notifications of new items.",
                     Image = "images/widget_notifications",
-                    Modules =
-                    {
-                        Prefix = "notification_",
-                    },
+                    TargetScreen = "NotificationsScreen",
                     Settings = "mod_notification"
                 },
                 {
@@ -36,10 +34,7 @@ Settings =
                     Name = "Reminders",
                     Desc = "Reminders of scheduled events.",
                     Image = "images/widget_reminders",
-                    Modules =
-                    {
-                        Prefix = "reminder_",
-                    },
+                    TargetScreen = "RemindersScreen",
                     Settings = "mod_reminders"
                 },
             },
@@ -55,6 +50,7 @@ Settings =
                     Name = "Courses",
                     Desc = "Courses to help you take the next steps to a better you.",
                     Image = "images/widget_courses",
+                    TargetScreen = "ModulesScreen",
                     Modules =
                     {
                         "course_intro",
@@ -66,6 +62,7 @@ Settings =
                     Name = "Trackers",
                     Desc = "Trackers to help you monitor your progress.",
                     Image = "images/widget_trackers",
+                    TargetScreen = "ModulesScreen",
                     Modules =
                     {
                         "tracker_mood",
@@ -77,6 +74,7 @@ Settings =
                     Name = "Meditation",
                     Desc = "Meditations to calm your mind.",
                     Image = "images/widget_meditation",
+                    TargetScreen = "ModulesScreen",
                     Modules =
                     {
                         "meditation_forest",
@@ -89,6 +87,7 @@ Settings =
                     Name = "Games",
                     Desc = "Games to change your focus.",
                     Image = "images/widget_games",
+                    TargetScreen = "ModulesScreen",
                     Modules =
                     {
                         "game_bubbles",
@@ -101,11 +100,7 @@ Settings =
                     Name = "Quotes",
                     Desc = "Quotes to pick you up.",
                     Image = "images/widget_quotes",
-                    Modules =
-                    {
-                        "quotes_group1",
-                        "quotes_group2",
-                    },
+                    TargetScreen = "QuotesScreen",
                 },
             },
         },
