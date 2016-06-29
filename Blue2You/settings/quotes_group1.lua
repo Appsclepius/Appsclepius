@@ -6,7 +6,7 @@ Data =
     Settings =
     {
         {
-            Quote = "This is quote 1.",
+            Quote = "Lorem ipsum dolor sit amet, consectetur adipiscing elit. Vestibulum interdum suscipit eros in placerat.",
             Source = "Someone Cool",
         },
         {

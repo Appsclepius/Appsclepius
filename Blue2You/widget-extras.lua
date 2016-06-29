@@ -836,7 +836,18 @@ function widget.newWidgetQuotePanel( options )
     background.anchorX = 0
     background.anchorY = 0
 
-    barContainer._title = display.newText('"'..opt.quote..'"', opt.titleX, opt.titleY, opt.titleFont, opt.titleFontSize)
+    local textOptions = 
+    {
+        --parent = textGroup,
+        text = '"'..opt.quote..'"',     
+        x = opt.titleX,
+        y = opt.titleY,
+        width = opt.width - opt.titleX*2,
+        font = opt.titleFont,   
+        fontSize = opt.titleFontSize,
+        align = "center"  -- alignment parameter
+    }
+    barContainer._title = display.newText(textOptions)
     barContainer._title.anchorX = 0
 --        barContainer._title.anchorY = 0
     barContainer._title:setFillColor(unpack(opt.titleColor))
@@ -849,7 +860,18 @@ function widget.newWidgetQuotePanel( options )
         sourceName = '-'..opt.source
     end
     
-    barContainer._desc = display.newText(sourceName, opt.descX, opt.descY, opt.descFont, opt.descFontSize)
+    local sourceOptions = 
+    {
+        --parent = textGroup,
+        text = sourceName,     
+        x = opt.descX,
+        y = opt.descY,
+        width = opt.width - opt.descX*2,
+        font = opt.descFont,   
+        fontSize = opt.descFontSize,
+        align = "right"  -- alignment parameter
+    }
+    barContainer._desc = display.newText(sourceOptions)
     barContainer._desc.anchorX = 0
 --        barContainer._desc.anchorY = 0
     barContainer._desc:setFillColor(unpack(opt.descColor))
