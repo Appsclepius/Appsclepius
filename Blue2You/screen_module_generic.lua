@@ -28,19 +28,11 @@ local onRowTouch = function( event )
         local row = event.row
         local moduleData = event.row.params.ModuleData
         local id = row.index
+--        myApp.CurrentQuest = id
         
-        if moduleData.TargetScreen == 'NotificationsScreen' then
-            --myApp.showScreenModules()    
-        elseif moduleData.TargetScreen == 'RemindersScreen' then
-            --myApp.showScreenModules()    
-        elseif moduleData.TargetScreen == 'ModulesScreen' then
-            myApp.showScreenModules()    
-        elseif moduleData.TargetScreen == 'QuotesScreen' then
-            myApp.showScreenQuotes()    
-        elseif moduleData.TargetScreen == 'ModuleGenericScreen' then
-            myApp.curModule = moduleData
-            myApp.showScreenModuleGeneric()    
-        end
+--        if locked == false then
+--            myApp.showScreenMissions()     
+--        end
     end
     return true
 end
@@ -74,24 +66,9 @@ local function onRowRender(event)
         }        
     end
     
-    local infoPanel = widget.newModuleInfoPanel({
-        title = moduleData.Name,
-        desc = moduleData.Desc,
-        height = 60,
-        y = 0,
-        titleX = 10,
-        titleY = 10,---28,
-        descY = 32,---15,
-        backgroundColor = { 0.72, 0.8, 0.92 },
-        titleColor = {0, 0, 0},
-        titleFont = myApp.font,
-        titleFontSize = 20,
-        descColor = {0.2, 0.2, 0.2},
-        descFont = myApp.font,
-        descFontSize = 14,
-        image = image,
-    })
-    row:insert(infoPanel)
+    local curYOffset = 0
+    
+    ProcessWidgetElements( row, curYOffset, moduleData.Settings.Elements )
     
     return true
 end
@@ -148,37 +125,17 @@ function scene:create( event )
     -- insert the list into the group
     sceneGroup:insert(myList)
     
-    for i = 1, #myApp.curModules do
-    
-        dofile( 'Settings/'..myApp.curModules[i]..'.lua' )
-        
-        if Data.Type == 'Quotes' then
-            for q = 1, #Data.Settings do
-                myList:insertRow{
-                    rowHeight = 60,
-                    rowColor = { 1, 1, 1 },
-                    lineColor = { 0.90, 0.90, 0.90 },
-                    params = {
-                        ModuleData = Data.Settings[q],
-                        Type = 'Quote',
-                    }
-                }                   
-            end
-        else
-            myList:insertRow{
-                rowHeight = 60,
-                rowColor = { 1, 1, 1 },
-                lineColor = { 0.90, 0.90, 0.90 },
-                params = {
-                    ModuleData = Data,
-                    Type = 'Module',
-                }
-            }          
-        end
-        
-        Data = nil
-    end
-    
+    if myApp.curModule then
+        myList:insertRow{
+            rowHeight = 60,
+            rowColor = { 1, 1, 1 },
+            lineColor = { 0.90, 0.90, 0.90 },
+            params = {
+                ModuleData = myApp.curModule,
+                Type = 'Module',
+            }
+        }          
+    end    
 end
 
 function scene:show( event )

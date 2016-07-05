@@ -880,6 +880,141 @@ function widget.newWidgetQuotePanel( options )
     barContainer.x = 0
     barContainer.y = opt.y
     
-    return barContainer
+    return barContainer, opt.height
+end
+
+function widget.newWidgetTextPanel( options )
+    local customOptions = options or {}
+    local opt = {}
+    
+    local statusBarPad = 0
+    if opt.includeStatusBar then
+        statusBarPad = display.topStatusBarContentHeight
+    end
+
+    opt.left = customOptions.left or nil
+    opt.top = customOptions.top or nil
+    opt.width = customOptions.width or display.contentWidth
+    opt.height = customOptions.height or 50
+    
+    opt.x = customOptions.x or display.contentCenterX
+    opt.y = customOptions.y or (opt.height + statusBarPad) * 0.5
+    opt.id = customOptions.id
+     
+    opt.background = customOptions.background
+    opt.backgroundColor = customOptions.backgroundColor
+    opt.text = customOptions.text or ""
+    opt.textColor = customOptions.textColor or { 0, 0, 0 }
+    opt.textFont = customOptions.textFont or native.systemFontBold
+    opt.textFontSize = customOptions.textFontSize or 18
+    opt.textX = customOptions.textX or display.contentCenterX
+    opt.textY = customOptions.textY or (opt.height + statusBarPad) * 0.5
+    opt.align = customOptions.align or 'left'
+    opt.source = customOptions.source or ""
+    opt.descColor = customOptions.descColor or { 0, 0, 0 }
+    opt.descFont = customOptions.descFont or native.systemFont
+    opt.descFontSize = customOptions.descFontSize or 18
+    opt.descX = customOptions.descX or display.contentCenterX
+    opt.descY = customOptions.descY or (opt.height + statusBarPad) * 0.5
+    opt.image = customOptions.image or nil
+    opt.isButton = customOptions.isButton or false
+    opt.locked = customOptions.locked or false
+    
+    if opt.left then
+    	opt.x = opt.left + opt.width * 0.5
+    end
+    if opt.top then
+    	opt.y = opt.top + (opt.height + statusBarPad) * 0.5
+    end
+
+    local barContainer = display.newGroup()
+    barContainer.anchorX = 0
+    barContainer.anchorY = 0
+    
+    local textOptions = 
+    {
+        --parent = textGroup,
+        text = opt.text,     
+        x = opt.textX,
+        y = opt.textY,
+        width = opt.width - opt.textX*2,
+        font = opt.textFont,   
+        fontSize = opt.textFontSize,
+        align = opt.align,  -- alignment parameter
+    }
+    barContainer._text = display.newText(textOptions)
+    barContainer._text.anchorX = 0
+--        barContainer._text.anchorY = 0
+    barContainer._text:setFillColor(unpack(opt.textColor))
+
+    opt.height = barContainer._text.contentHeight + opt.textX*2
+    barContainer._text.y = (opt.height + statusBarPad) * 0.5
+    
+    local background = display.newRect(barContainer, 2, 4, opt.width - 4, opt.height + statusBarPad )    
+    background:setFillColor( customOptions.backgroundColor[1], customOptions.backgroundColor[2], customOptions.backgroundColor[3] )
+    background.anchorX = 0
+    background.anchorY = 0
+
+    barContainer:insert(barContainer._text) 
+    
+    barContainer.x = 0
+    barContainer.y = opt.y
+    
+    return barContainer, opt.height
+end
+
+function widget.newWidgetImagePanel( options )
+    local customOptions = options or {}
+    local opt = {}
+    
+    local statusBarPad = 0
+    if opt.includeStatusBar then
+        statusBarPad = display.topStatusBarContentHeight
+    end
+
+    opt.left = customOptions.left or nil
+    opt.top = customOptions.top or nil
+    opt.width = customOptions.width or display.contentWidth
+    opt.height = customOptions.height or 50
+    
+    opt.x = customOptions.x or display.contentCenterX
+    opt.y = customOptions.y or (opt.height + statusBarPad) * 0.5
+    opt.id = customOptions.id
+     
+    opt.background = customOptions.background
+    opt.backgroundColor = customOptions.backgroundColor
+    opt.image = customOptions.image or nil
+    opt.isButton = customOptions.isButton or false
+    opt.locked = customOptions.locked or false
+    
+    if opt.left then
+    	opt.x = opt.left + opt.width * 0.5
+    end
+    if opt.top then
+    	opt.y = opt.top + (opt.height + statusBarPad) * 0.5
+    end
+
+    local barContainer = display.newGroup()
+    barContainer.anchorX = 0
+    barContainer.anchorY = 0
+    
+    local background = display.newRect(barContainer, 2, 4, opt.width - 4, opt.image.height + statusBarPad + 20 )    
+    background:setFillColor( customOptions.backgroundColor[1], customOptions.backgroundColor[2], customOptions.backgroundColor[3] )
+    background.anchorX = 0
+    background.anchorY = 0
+    
+    if opt.image then
+        local curImage = display.newImageRect( opt.image.name, opt.image.width, opt.image.height )
+        curImage.anchorX = 0
+        curImage.anchorY = 0
+        curImage.x = ( display.contentWidth - opt.image.width ) / 2
+        curImage.y = 10
+        barContainer:insert(curImage)
+    end
+
+    barContainer.x = 0
+    barContainer.y = opt.y
+    
+    return barContainer, opt.image.height + statusBarPad + 20
 end
 

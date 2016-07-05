@@ -88,34 +88,8 @@ local function onRowRender(event)
     
     local curYOffset = 60
     
-    if widgetData.Elements ~= nil then
-        for k,v in ipairs( widgetData.Elements ) do
-            if v.Type == 'Quote' then
-                local quotePanel = widget.newWidgetQuotePanel({
-                    quote = v.Settings.Quote,
-                    source = v.Settings.Source,
-                    height = v.Height,
-                    y = curYOffset,
-                    titleX = 20,
-                    titleY = 25,---10,
-                    descX = 35,---15,
-                    descY = 85,---15,
-                    backgroundColor = { 0.72, 0.8, 0.92 },
-                    titleColor = {0, 0, 0},
-                    titleFont = myApp.font,
-                    titleFontSize = 16,
-                    descColor = {0.2, 0.2, 0.2},
-                    descFont = myApp.font,
-                    descFontSize = 14,
-                })
-                row:insert(quotePanel)
-            elseif v.Type == 'StatReport' then
-                
-            end
-            
-        end
-    end
-
+    ProcessWidgetElements( row, curYOffset, widgetData.Elements )
+    
     return true
 end
 

@@ -28,6 +28,7 @@ if userDataLoaded then
 end
 
 myApp.curModules = nil
+myApp.curModule = nil
 
 if (display.pixelHeight/display.pixelWidth) > 1.5 then
     myApp.isTall = true
@@ -115,6 +116,15 @@ function myApp.showScreenModules()
     }
     composer.removeHidden()
     composer.gotoScene("screen_modules", {time=250, effect="crossFade", params = options})
+    return true
+end
+
+function myApp.showScreenModuleGeneric()
+    --myApp.tabBar:setSelected(2)
+    local options = {
+    }
+    composer.removeHidden()
+    composer.gotoScene("screen_module_generic", {time=250, effect="crossFade", params = options})
     return true
 end
 
