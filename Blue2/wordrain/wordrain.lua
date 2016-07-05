@@ -425,18 +425,6 @@ wordRainWidget.TransitionOut = function( time )
 	-- Transition Screen out
 	transition.to( wordRainWidget.screen, { y = -display.contentHeight, alpha=0, time = time, transition = easing.outQuad, onComplete=wordRainWidget.TransitionOutComplete } )
 	
-	bkgnd = display.newRect( wordRainWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight )
-	c1, c2, dir = GetBkgndColorForPhase( 0 )
-	bkgnd:setFillColor( {
-		type = 'gradient',
-		color1 = c1,
-		color2 = c2,
-		direction = dir
-	} )
-	bkgnd.anchorX = 0
-	bkgnd.anchorY = 0
-	transition.to( wordRainWidget.screen, { y = display.contentHeight * -1, alpha=0, time = 0, transition = easing.outQuad } )
-
 	-- Stop and clear background music
 	audio.stop( backgroundMusic )
 	audio.dispose( backgroundMusic )
@@ -458,6 +446,16 @@ wordRainWidget.TransitionIn = function( time )
 	wordRainWidget.screen = display.newGroup()
 
 	-- Transition Screen In
+	bkgnd = display.newRect( wordRainWidget.screen, 0, 0, display.contentWidth, display.actualContentHeight )
+	c1, c2, dir = GetBkgndColorForPhase( 0 )
+	bkgnd:setFillColor( {
+		type = 'gradient',
+		color1 = c1,
+		color2 = c2,
+		direction = dir
+	} )
+	bkgnd.anchorX = 0
+	bkgnd.anchorY = 0
 	transition.to( wordRainWidget.screen, { y = display.screenOriginY, alpha=1, time = time, transition = easing.outQuad } )
 
 	-- Start background music
